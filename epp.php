@@ -417,7 +417,7 @@ function epp_TransferDomain($params = array())
         $from[] = '/{{ years }}/';
         $to[] = htmlspecialchars($params['regperiod']);
         $from[] = '/{{ authInfo_pw }}/';
-        $to[] = htmlspecialchars($params['transfersecret']);
+        $to[] = $params['transfersecret'];
         $from[] = '/{{ clTRID }}/';
         $clTRID = str_replace('.', '', round(microtime(1), 3));
         $to[] = htmlspecialchars($params['registrarprefix'] . '-domain-transfer-' . $clTRID);
@@ -1620,7 +1620,8 @@ class epp_epp_client
             )
         );
         $context = stream_context_create($opts);
-        $this->socket = stream_socket_client("tlsv{$tls_version}://{$host}:{$port}", $errno, $errmsg, $timeout, STREAM_CLIENT_CONNECT, $context);
+        $this->socket = stream_socket_client("ssl://{$host}:{$port}", $errno, $errmsg, $timeout, STREAM_CLIENT_CONNECT, $context);
+        //$this->socket = stream_socket_client("tlsv{$tls_version}://{$host}:{$port}", $errno, $errmsg, $timeout, STREAM_CLIENT_CONNECT, $context);
 
 
         if (!$this->socket) {
