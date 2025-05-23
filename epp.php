@@ -1524,33 +1524,31 @@ function epp_Sync($params = array())
         $r = $s->write($xml, __FUNCTION__);
         $r = $r->response->resData->children('urn:ietf:params:xml:ns:domain-1.0')->infData;
         $expDate = (string)$r->exDate;
-        $timestamp = strtotime($expDate);
+        $expTimestamp = strtotime($expDate);
+        $crDate = (string)$r->crDate;
+        $crTimestamp = strtotime($crDate);
 
-        if ($timestamp === false) {
+        if ($expTimestamp === false) {
             return array(
                 'error' => 'Empty expDate date for domain: ' . $params['domain']
             );
         }
 
-        // $expDate = preg_replace("/^(\d+\-\d+\-\d+)\D.*$/", "$1", $expDate);
+        $expDateFormatted = date('Y-m-d', $expTimestamp);
+        $crDateFormatted = date('Y-m-d', $crTimestamp);
 
-        $expDateFormatted = date('Y-m-d', $timestamp);
-
-        if ($timestamp < time()) {
+        if ($expTimestamp < time() && $expDateFormatted !== $crDateFormatted) {
             return array(
-                'expirydate'    =>  $expDateFormatted,
-                'expired'       =>  true
+                'expirydate' =>  $expDateFormatted,
+                'expired'    =>  true
             );            
-        }
-        else {
+        } else {
             return array(
-                'expirydate'    =>  $expDateFormatted,
-                'active'        =>  true
+                'expirydate' =>  $expDateFormatted,
+                'active'     =>  true
             );
         }
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
