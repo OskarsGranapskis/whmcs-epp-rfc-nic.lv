@@ -417,7 +417,7 @@ function epp_TransferDomain($params = array())
         $from[] = '/{{ years }}/';
         $to[] = htmlspecialchars($params['regperiod']);
         $from[] = '/{{ authInfo_pw }}/';
-        $to[] = htmlspecialchars($params['transfersecret']);
+        $to[] = $params['transfersecret'];
         $from[] = '/{{ clTRID }}/';
         $clTRID = str_replace('.', '', round(microtime(1), 3));
         $to[] = htmlspecialchars($params['registrarprefix'] . '-domain-transfer-' . $clTRID);
@@ -1532,17 +1532,17 @@ function epp_Sync($params = array())
             );
         }
 
-        $expDate = preg_replace("/^(\d+\-\d+\-\d+)\D.*$/", "$1", $expDate);
+        $expDateFormatted = date('Y-m-d', $timestamp);
 
         if ($timestamp < time()) {
             return array(
-                'expirydate'    =>  $expDate,
+                'expirydate'    =>  $expDateFormatted,
                 'expired'       =>  true
             );            
         }
         else {
             return array(
-                'expirydate'    =>  $expDate,
+                'expirydate'    =>  $expDateFormatted,
                 'active'        =>  true
             );
         }
@@ -1590,42 +1590,23 @@ class epp_epp_client
     }
 
     function connect($host, $port = 700, $ssl, $timeout = 30)
-    {
-        ini_set('display_errors', true);
-        error_reporting(E_ALL);
-
-        // echo '<pre>';print_r($host);
-        // print_r($this->params);
-        // exit;
-
-        if ($host != $this->params['host']) {
-            throw new exception("Unknown EPP server '$host'");
-        }
-        
-        $tls_version = '1.2';
-        if ($this->params['tls_version'] == 'on') {
-            $tls_version = '1.3';
-        }
-        
+    {   
         $opts = array(
             'ssl' => array(
                 'verify_peer' => $ssl['verify_peer'],
                 'verify_peer_name' => false,
                 'verify_host' => false,
-                //'cafile' => __DIR__ . '/' . $ssl['cafile'],
-                //'local_cert' => __DIR__ . '/' . $ssl['local_cert'],
-                //'local_pk' => __DIR__ . '/' . $ssl['local_pk'],
                 'passphrase' => $ssl['passphrase'],
                 'allow_self_signed' => true
             )
         );
         $context = stream_context_create($opts);
-        $this->socket = stream_socket_client("tlsv{$tls_version}://{$host}:{$port}", $errno, $errmsg, $timeout, STREAM_CLIENT_CONNECT, $context);
+        $this->socket = stream_socket_client("ssl://{$host}:{$port}", $errno, $errmsg, $timeout, STREAM_CLIENT_CONNECT, $context);
 
 
         if (!$this->socket) {
             _epp_log($errmsg);
-            throw new exception("Cannot connect to server '{$host}': {$errmsg}");
+            throw new exception("Cannot connect to server");
         }
 
         return $this->read();
@@ -1721,9 +1702,9 @@ class epp_epp_client
         }
         $r = simplexml_load_string($this->read());
         _epp_modulelog($xml, $r, $action);
-            if (isset($r->response) && $r->response->result->attributes()->code >= 2000) {
-                throw new exception($r->response->result->msg);
-            }
+        if (isset($r->response) && $r->response->result->attributes()->code >= 2000) {
+            throw new exception($r->response->result->msg);
+        }
         return $r;
     }
 
@@ -1788,11 +1769,9 @@ function _epp_modulelog($send, $responsedata, $action)
 
 function _epp_log($func, $params = false)
 {
-
-    // comment line below to see logs
-    //return true;
-
-    $handle = fopen(dirname(__FILE__) . '/epp.log', 'a');
+    $date = date('Y-m-d');
+    $logFile = dirname(__FILE__) . "/epp-{$date}.log";
+    $handle = fopen($logFile, 'a');
     ob_start();
     echo "\n================= $func =================\n";
     print_r($params);
