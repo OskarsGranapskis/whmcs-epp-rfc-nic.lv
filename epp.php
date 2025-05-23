@@ -1532,6 +1532,8 @@ function epp_Sync($params = array())
             );
         }
 
+        // $expDate = preg_replace("/^(\d+\-\d+\-\d+)\D.*$/", "$1", $expDate);
+
         $expDateFormatted = date('Y-m-d', $timestamp);
 
         if ($timestamp < time()) {
@@ -1590,7 +1592,11 @@ class epp_epp_client
     }
 
     function connect($host, $port = 700, $ssl, $timeout = 30)
-    {   
+    {
+        if ($host != $this->params['host']) {
+            throw new exception("Unknown EPP server");
+        }
+        
         $opts = array(
             'ssl' => array(
                 'verify_peer' => $ssl['verify_peer'],
@@ -1606,7 +1612,7 @@ class epp_epp_client
 
         if (!$this->socket) {
             _epp_log($errmsg);
-            throw new exception("Cannot connect to server");
+            throw new exception("Cannot connect to server '{$host}': {$errmsg}");
         }
 
         return $this->read();
@@ -1702,9 +1708,9 @@ class epp_epp_client
         }
         $r = simplexml_load_string($this->read());
         _epp_modulelog($xml, $r, $action);
-        if (isset($r->response) && $r->response->result->attributes()->code >= 2000) {
-            throw new exception($r->response->result->msg);
-        }
+            if (isset($r->response) && $r->response->result->attributes()->code >= 2000) {
+                throw new exception($r->response->result->msg);
+            }
         return $r;
     }
 
