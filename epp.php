@@ -317,9 +317,7 @@ function epp_RegisterDomain($params = array())
       </command>
     </epp>');
         $r = $s->write($xml, __FUNCTION__);
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -1706,9 +1704,19 @@ class epp_epp_client
         }
         $r = simplexml_load_string($this->read());
         _epp_modulelog($xml, $r, $action);
-            if (isset($r->response) && $r->response->result->attributes()->code >= 2000) {
-                throw new exception($r->response->result->msg);
+        if (isset($r->response) && $r->response->result->attributes()->code >= 2000) {
+            $errorMessages = [];
+
+            foreach ($r->response->result as $result) {
+                if ($result->attributes()->code >= 2000) {
+                    $errorMessages[] = $result->msg;
+                }
             }
+
+            if (!empty($errorMessages)) {
+                throw new Exception(implode("; ", $errorMessages));
+            }
+        }
         return $r;
     }
 
