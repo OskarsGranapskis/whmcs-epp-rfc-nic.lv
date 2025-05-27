@@ -388,9 +388,7 @@ function epp_RenewDomain($params = array())
   </command>
 </epp>');
         $r = $s->write($xml, __FUNCTION__);
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -437,9 +435,7 @@ function epp_TransferDomain($params = array())
   </command>
 </epp>');
         $r = $s->write($xml, __FUNCTION__);
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -497,9 +493,7 @@ function epp_GetNameservers($params = array())
 
             Capsule::table('epp_domain_status')->insert(['domain_id' => $params['domainid'], 'status' => $st]);
         }
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -564,8 +558,7 @@ function epp_SaveNameservers($params = array())
 
             if ($k0 = array_search($v, $rem)) {
                 unset($rem[$k0]);
-            }
-            else {
+            } else {
                 $add[$k] = $v;
             }
         }
@@ -610,9 +603,7 @@ function epp_SaveNameservers($params = array())
 </epp>');
             $r = $s->write($xml, __FUNCTION__);
         }
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -660,9 +651,7 @@ function epp_GetRegistrarLock($params = array())
                 $return = 'locked';
             }
         }
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = 'locked';
     }
 
@@ -721,8 +710,7 @@ function epp_SaveRegistrarLock($params = array())
                 if (!isset($status[$st])) {
                     $add[] = $st;
                 }
-            }
-            else {
+            } else {
                 if (isset($status[$st])) {
                     $rem[] = $st;
                 }
@@ -768,9 +756,7 @@ function epp_SaveRegistrarLock($params = array())
 </epp>');
             $r = $s->write($xml, __FUNCTION__);
         }
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -875,25 +861,19 @@ function epp_GetContactDetails($params = array())
         foreach($dcontact as $type => $id) {
             if ($type == 'registrant') {
                 $type = 'Registrant';
-            }
-            elseif ($type == 'admin') {
+            } elseif ($type == 'admin') {
                 $type = 'Administrator';
-            }
-            elseif ($type == 'tech') {
+            } elseif ($type == 'tech') {
                 $type = 'Technical';
-            }
-            elseif ($type == 'billing') {
+            } elseif ($type == 'billing') {
                 $type = 'Billing';
-            }
-            else {
+            } else {
                 continue;
             }
 
             $return[$type] = $contact[$id];
         }
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -946,14 +926,11 @@ function epp_SaveContactDetails($params = array())
             $a = array();
             if ($type == 'registrant') {
                 $a = $params['contactdetails']['Registrant'];
-            }
-            elseif ($type == 'admin') {
+            } elseif ($type == 'admin') {
                 $a = $params['contactdetails']['Administrator'];
-            }
-            elseif ($type == 'tech') {
+            } elseif ($type == 'tech') {
                 $a = $params['contactdetails']['Technical'];
-            }
-            elseif ($type == 'billing') {
+            } elseif ($type == 'billing') {
                 $a = $params['contactdetails']['Billing'];
             }
 
@@ -1046,9 +1023,7 @@ function epp_SaveContactDetails($params = array())
 </epp>');
             $r = $s->write($xml, __FUNCTION__);
         }
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -1138,9 +1113,7 @@ function epp_IDProtectToggle($params = array())
 </epp>');
             $r = $s->write($xml, __FUNCTION__);
         }
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -1189,9 +1162,7 @@ function epp_GetEPPCode($params = array())
             $s->logout($params['registrarprefix']);
         }
         return array('eppcode' => $eppcode);
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -1262,9 +1233,7 @@ function epp_RegisterNameserver($params = array())
   </command>
 </epp>');
         $r = $s->write($xml, __FUNCTION__);
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -1318,9 +1287,7 @@ function epp_ModifyNameserver($params = array())
   </command>
 </epp>');
         $r = $s->write($xml, __FUNCTION__);
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -1360,9 +1327,7 @@ function epp_DeleteNameserver($params = array())
   </command>
 </epp>');
         $r = $s->write($xml, __FUNCTION__);
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -1402,9 +1367,7 @@ function epp_RequestDelete($params = array())
   </command>
 </epp>');
         $r = $s->write($xml, __FUNCTION__);
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -1477,9 +1440,7 @@ function epp_TransferSync($params = array())
         }
 
         return $return;
-    }
-
-    catch(exception $e) {
+    } catch(exception $e) {
         $return = array(
             'error' => $e->getMessage()
         );
@@ -1683,10 +1644,10 @@ class epp_epp_client
         _epp_log('================= read-this =================', $this);
         $hdr = stream_get_contents($this->socket, 4);
         if ($hdr === false) {
-        throw new exception('Connection appears to have closed.');
+            throw new exception('Connection appears to have closed.');
         }
         if (strlen($hdr) < 4) {
-        throw new exception('Failed to read header from the connection.');
+            throw new exception('Failed to read header from the connection.');
         }
         $unpacked = unpack('N', $hdr);
         $xml = fread($this->socket, ($unpacked[1] - 4));
@@ -1700,7 +1661,7 @@ class epp_epp_client
         _epp_log('================= send-this =================', $this);
         _epp_log('================= send =================', $xml);
         if (fwrite($this->socket, pack('N', (strlen($xml) + 4)) . $xml) === false) {
-        throw new exception('Error writing to the connection.');
+            throw new exception('Error writing to the connection.');
         }
         $r = simplexml_load_string($this->read());
         _epp_modulelog($xml, $r, $action);
@@ -1724,7 +1685,7 @@ class epp_epp_client
     {
         $result = fclose($this->socket);
         if (!$result) {
-             throw new exception('Error closing the connection.');
+            throw new exception('Error closing the connection.');
         }
         $this->socket = null;
         return $result;
@@ -1776,7 +1737,7 @@ function _epp_modulelog($send, $responsedata, $action)
     $from[] = "/<pw>[^<]*<\/pw>/i";
     $to[] = '<pw>Not disclosed pw</pw>';
     $sendforlog = preg_replace($from, $to, $send);
-    logModuleCall('epp',$action,$sendforlog,$responsedata);
+    logModuleCall('epp', $action, $sendforlog, $responsedata);
 }
 
 function _epp_log($func, $params = false)
@@ -1795,11 +1756,6 @@ function _epp_log($func, $params = false)
 
 function _epp_create_table()
 {
-
-    //    Capsule::schema()->table('tbldomains', function (Blueprint $table) {
-    //        $table->increments('id')->unsigned()->change();
-    //    });
-
     if (!Capsule::schema()->hasTable('epp_domain_status')) {
         try {
             Capsule::schema()->create('epp_domain_status',
@@ -1808,8 +1764,6 @@ function _epp_create_table()
                 /** @var \Illuminate\Database\Schema\Blueprint $table */
                 $table->increments('id');
                 $table->integer('domain_id');
-
-                // $table->integer('domain_id')->unsigned();
 
                 $table->enum('status', array(
                     'clientDeleteProhibited',
@@ -1836,9 +1790,7 @@ function _epp_create_table()
                 ));
                 $table->foreign('domain_id')->references('id')->on('tbldomains')->onDelete('cascade');
             });
-        }
-
-        catch(Exception $e) {
+        } catch(Exception $e) {
             echo "Unable to create table 'epp_domain_status': {$e->getMessage() }";
         }
     }
@@ -1860,9 +1812,7 @@ function _epp_create_column()
                     'serverCancelled'
                 ))->nullable()->after('status');
             });
-        }
-
-        catch(Exception $e) {
+        } catch(Exception $e) {
             echo "Unable to alter table 'tbldomains' add column 'trstatus': {$e->getMessage() }";
         }
     }
