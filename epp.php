@@ -9,7 +9,7 @@
  * @license MIT
  */
 if (!defined("WHMCS")) {
-    die("This file cannot be accessed directly");
+    die();
 }
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -1496,7 +1496,13 @@ function epp_Sync($params = array())
         $expDateFormatted = date('Y-m-d', $expTimestamp);
         $crDateFormatted = date('Y-m-d', $crTimestamp);
 
-        if ($expTimestamp < time() && $expDateFormatted !== $crDateFormatted) {
+        if ($expDateFormatted == $crDateFormatted) {
+            return array(
+                'error' => 'Creation date = expiry date: ' . $params['domain']
+            );
+        }
+
+        if ($expTimestamp < time()) {
             return array(
                 'expirydate' =>  $expDateFormatted,
                 'expired'    =>  true
@@ -1743,7 +1749,8 @@ function _epp_modulelog($send, $responsedata, $action)
 function _epp_log($func, $params = false)
 {
     $date = date('Y-m-d');
-    $logFile = dirname(__FILE__) . "/epp-{$date}.log";
+    $logDir = dirname(__DIR__, 4) . '/epp_logs';
+    $logFile = $logDir . "/epp-{$date}.log";
     $handle = fopen($logFile, 'a');
     ob_start();
     echo "\n================= $func =================\n";
